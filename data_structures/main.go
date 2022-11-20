@@ -41,7 +41,9 @@ func main() {
 
 	jim.print()
 
-	jim.updateName("Jimmy")
+	// point to address of the jim (Reference)
+	jimPointer := &jim
+	jimPointer.updateName("Jimmy")
 	jim.print()
 
 }
@@ -50,6 +52,7 @@ func (p person) print() {
 	fmt.Printf("%+v\n", p)
 }
 
-func (p person) updateName(newFirstName string) {
-	p.firstName = newFirstName
+// point to value of the person pointer (Dereference)
+func (pointerToPerson *person) updateName(newFirstName string) {
+	(*pointerToPerson).firstName = newFirstName
 }
