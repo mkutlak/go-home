@@ -42,8 +42,7 @@ func main() {
 	jim.print()
 
 	// point to address of the jim (Reference)
-	jimPointer := &jim
-	jimPointer.updateName("Jimmy")
+	jim.updateName("Jimmy")
 	jim.print()
 
 }
