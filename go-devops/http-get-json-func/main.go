@@ -79,6 +79,8 @@ func doRequest(requestUrl string) (Response, error) {
 		return nil, fmt.Errorf("Error: Http Get error: %s", err)
 	}
 
+	defer resp.Body.Close()
+
 	body, err := io.ReadAll(resp.Body)
 
 	if err != nil {
