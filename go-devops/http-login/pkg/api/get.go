@@ -20,6 +20,11 @@ type Words struct {
 	Words []string `json:"words"`
 }
 
+type WordsPage struct {
+	Page
+	Words
+}
+
 func (w Words) GetResponse() string {
 	return fmt.Sprintf("Words: %s", strings.Join(w.Words, ", "))
 }
@@ -38,7 +43,7 @@ func (o Occurrence) GetResponse() string {
 	return fmt.Sprintf("%s", strings.Join(out, ", "))
 }
 
-func (a API) DoGetRequest(requestUrl string) (Response, error) {
+func (a api) DoGetRequest(requestUrl string) (Response, error) {
 
 	resp, err := a.Client.Get(requestUrl)
 
