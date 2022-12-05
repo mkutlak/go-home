@@ -21,6 +21,7 @@ func main() {
 	var (
 		s3Client *s3.Client
 		err      error
+		out      []byte
 	)
 	ctx := context.Background()
 
@@ -40,6 +41,13 @@ func main() {
 	}
 
 	fmt.Println("Upload completed!")
+
+	if out, err = downloadFromS3Bucket(ctx, s3Client); err != nil {
+		fmt.Printf("downloadFromS3Bucket error: %v\n", err)
+		os.Exit(1)
+	}
+
+	fmt.Printf("Download of file completed: %s", out)
 }
 
 func initS3Client(ctx context.Context) (*s3.Client, error) {
@@ -101,4 +109,25 @@ func uploadToS3Bucket(ctx context.Context, s3client *s3.Client) error {
 	}
 
 	return nil
+}
+
+func downloadFromS3Bucket(ctx context.Context, s3client *s3.Client) ([]byte, error) {
+	downloader := manager.NewDownloader(s3client)
+
+	buffer := manager.NewWriteAtBuffer([]byte{})
+
+	numBytes, err := downloader.Download(ctx, buffer, &s3.GetObjectInput{
+		Bucket: aws.String(bucketName),
+		Key:    aws.String("text-file.txt"),
+	})
+
+	if err != nil {
+		return nil, fmt.Errorf("unable download file from S3 bucket: %v", err)
+	}
+
+	if numBytesReceived := len(buffer.Bytes()); numBytes != int64(numBytesReceived) {
+		return nil, fmt.Errorf("received bytes error(numBytes:%d, receivedBytes: %d): %v", err, numBytes, numBytesReceived)
+	}
+
+	return buffer.Bytes(), nil
 }
